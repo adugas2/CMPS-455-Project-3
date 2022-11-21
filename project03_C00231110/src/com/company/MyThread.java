@@ -1,14 +1,17 @@
 package com.company;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MyThread extends Thread{
-
-    private int id;
-    private int maxBurst;
+    //Begin code changes by Ethan Forster
+    public int id;
+    public int maxBurst;
     private int currentBurst;
+    public int allottedBurst;
     private Semaphore[] taskStart;
     private Semaphore[] taskEnd;
+
 
     public MyThread(int id, int burst, Semaphore[] start, Semaphore[] end){
         super(String.valueOf(id));
@@ -28,11 +31,17 @@ public class MyThread extends Thread{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println("Proc. Thread "+id+"  | On CPU: MB="+maxBurst+", CB="+currentBurst+", BT=" + allottedBurst);
             // loop for allotted # of bursts
-
+            for (int i = 0; i < allottedBurst; i++){
+                System.out.println("Proc. Thread "+id+"  | Using CPU; On burst "+i+".");
+                currentBurst--;
+            }
+            System.out.println();
             //notify CPU of finished task
             taskEnd[id].release();
 
         }
     }
+    //End code changes by Ethan Forster
 }

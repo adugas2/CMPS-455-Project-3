@@ -3,29 +3,47 @@ package com.company;
 import java.util.concurrent.Semaphore;
 
 public class DispatcherThread extends Thread {
-
+    //Begin code changes by Ethan Forster
     public int allottedBurst;
+    public int quantum;
     private Semaphore dispatcherStart;
     private Semaphore coreStart;
-    public Thread[] readyQueue;
+    public MyThread[] readyQueue;
+    public int currentposition = 0;
+    private int burstGoal;
 
-    public DispatcherThread() {
-
+    public DispatcherThread(int quantum, Semaphore dispatcherStart, Semaphore coreStart, MyThread[] readyQueue, int burstGoal) {
+        this.quantum = quantum;
+        this.dispatcherStart = dispatcherStart;
+        this.coreStart = coreStart;
+        this.readyQueue = readyQueue;
+        this.burstGoal = burstGoal;
     }
 
     @Override
     public void run() {
-        try {
-            dispatcherStart.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        System.out.println("Dispatcher    | Using CPU");
+        System.out.println("Dispatcher    | Running RR algorithm, Time Quantum = " + quantum);
+        System.out.println();
+        while(burstGoal > 0) {
+            try {
+                dispatcherStart.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // select task from ready queue
+            // assign Task and allotted burst to Core
+            System.out.println("Dispatcher    | Running process " + currentposition);
+            allottedBurst = quantum;
+            burstGoal-=allottedBurst;
+
+            coreStart.release();
+            currentposition++;
+            if (currentposition > readyQueue.length -1){
+                currentposition = 0;
+            }
         }
-
-        // select task from ready queue
-
-        // assign Task and allotted burst to Core
-
-        coreStart.release();
-
     }
+    //End code changes by Ethan Forster
 }

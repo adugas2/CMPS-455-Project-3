@@ -8,10 +8,11 @@ import java.util.concurrent.Semaphore;
 public class Main {
 
     public static void main(String[] args) {
+        int quantum = 5;
         //FCFS();
         //NPSJF();
         //PSJF();
-        RR();
+        RR(quantum);
     }
 
     // Begin code changes by Austin Dugas
@@ -26,7 +27,7 @@ public class Main {
     // End code changes by Austin Dugas
 
     // Begin code changes by Ethan Forster
-    public static void RR(){
+    public static void RR(int quantum){
         Random r = new Random();
         // T
         int numThreads = r.nextInt(26) +1;
@@ -36,16 +37,37 @@ public class Main {
         Arrays.fill(start, new Semaphore(0));
         Semaphore[] end = new Semaphore[numThreads];
         Arrays.fill(end, new Semaphore(0));
+        Semaphore dispatcherStart = new Semaphore(1);
+        Semaphore coreStart = new Semaphore(0);
 
         //threads
-        Thread[] taskThreads = new Thread[numThreads];
+        int maxBurst = 0;
+        int burst;
+        MyThread[] taskThreads = new MyThread[numThreads];
         for (int i = 0; i < taskThreads.length; i++) {
             System.out.println("Main thread     | Creating process thread " + i);
-            taskThreads[i] = new MyThread(i, r.nextInt(51)+1, start, end);
+            burst = r.nextInt(51)+1;
+            maxBurst += burst;
+            taskThreads[i] = new MyThread(i, burst, start, end);
         }
+        System.out.println();
+        System.out.println("--------------- Ready Queue ---------------");
+        for (MyThread taskThread : taskThreads) {
+            System.out.println("ID:"+ taskThread.id +", Max Burst:"+ taskThread.maxBurst +", Current Burst:0");
+        }
+        System.out.println("-------------------------------------------");
+        System.out.println();
+        System.out.println("Main thread     | Forking dispatcher");
+        System.out.println();
+        DispatcherThread dispatcher = new DispatcherThread(quantum, dispatcherStart, coreStart, taskThreads, maxBurst);
+        CPU core = new CPU(taskThreads, start, end, dispatcherStart, coreStart, dispatcher, maxBurst);
+        core.start();
         for (Thread taskThread : taskThreads) {
             taskThread.start();
         }
+        dispatcher.start();
+
+
 
     }
     // End code changes by Ethan Forster
