@@ -11,28 +11,39 @@ public class DispatcherThread extends Thread {
     public MyThread[] readyQueue;
     public int currentposition = 0;
     private int burstGoal;
+    private int alg;
 
-    public DispatcherThread(int quantum, Semaphore dispatcherStart, Semaphore coreStart, MyThread[] readyQueue, int burstGoal) {
+    public DispatcherThread(int quantum, Semaphore dispatcherStart, Semaphore coreStart, MyThread[] readyQueue, int burstGoal, int alg) {
         this.quantum = quantum;
         this.dispatcherStart = dispatcherStart;
         this.coreStart = coreStart;
         this.readyQueue = readyQueue;
         this.burstGoal = burstGoal;
+        this.alg = alg;
     }
 
-    public DispatcherThread(Semaphore dispatcherStart, Semaphore coreStart, MyThread[] readyQueue, int burstGoal) {
+    public DispatcherThread(Semaphore dispatcherStart, Semaphore coreStart, MyThread[] readyQueue, int burstGoal, int alg) {
         this.dispatcherStart = dispatcherStart;
         this.coreStart = coreStart;
         this.readyQueue = readyQueue;
         this.burstGoal = burstGoal;
+        this.alg = alg;
     }
 
     @Override
     public void run() {
-        RR();
-        FCFS();
+        switch (alg) {
+            case (2): {
+                RR();
+                break;
+            }
+            case (1): {
+                FCFS();
+                break;
+            }
+        }
     }
-    //End code changes by Ethan Forster
+
     public void RR() {
         System.out.println("Dispatcher    | Using CPU");
         System.out.println("Dispatcher    | Running RR algorithm, Time Quantum = " + quantum);
@@ -62,8 +73,9 @@ public class DispatcherThread extends Thread {
                 currentposition = 0;
             }
         }
+        //End code changes by Ethan Forster
     }
-
+    // Start code changes by Brian Hodge
     public void FCFS() {
         System.out.println("Dispatcher    | Using CPU");
         System.out.println("Dispatcher    | Running FCFS Algorithm");
@@ -87,6 +99,6 @@ public class DispatcherThread extends Thread {
                 currentposition = 0;
             }
         }
-
+        //End code changes by Brian Hodge
     }
 }

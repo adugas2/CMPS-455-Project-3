@@ -176,7 +176,7 @@ public class Main {
 
             switch (algo){
                 case 1:
-                    //FCFS();
+                    FCFS();
                     break;
                 case 2:
                     RR(quantum);
@@ -238,7 +238,7 @@ public class Main {
         System.out.println();
         System.out.println("Main thread     | Forking dispatcher");
         System.out.println();
-        DispatcherThread dispatcher = new DispatcherThread(quantum, dispatcherStart, coreStart, taskThreads, maxBurst);
+        DispatcherThread dispatcher = new DispatcherThread(quantum, dispatcherStart, coreStart, taskThreads, maxBurst, 2);
         CPU core = new CPU(taskThreads, start, end, dispatcherStart, coreStart, dispatcher, maxBurst);
         core.start();
         for (Thread taskThread : taskThreads) {
@@ -250,7 +250,7 @@ public class Main {
 
     }
     // End code changes by Ethan Forster
-
+    //Start code changes by Brian Hodge
     public static void FCFS() {
         Random r = new Random();
         // T
@@ -283,12 +283,13 @@ public class Main {
         System.out.println();
         System.out.println("Main thread     | Forking dispatcher");
         System.out.println();
-        DispatcherThread dispatcher = new DispatcherThread(dispatcherStart, coreStart, taskThreads, maxBurst);
+        DispatcherThread dispatcher = new DispatcherThread(dispatcherStart, coreStart, taskThreads, maxBurst, 1);
         CPU core = new CPU(taskThreads, start, end, dispatcherStart, coreStart, dispatcher, maxBurst);
         core.start();
         for (Thread taskThread : taskThreads) {
             taskThread.start();
         }
         dispatcher.start();
+        //End code changes by brian Hodge
     }
 }
