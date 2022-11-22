@@ -36,7 +36,13 @@ public class DispatcherThread extends Thread {
             // assign Task and allotted burst to Core
             System.out.println("Dispatcher    | Running process " + currentposition);
             allottedBurst = quantum;
-            burstGoal-=allottedBurst;
+
+            if (readyQueue[currentposition].currentBurst >= allottedBurst) {
+                burstGoal-=allottedBurst;
+            } else {
+                burstGoal-= readyQueue[currentposition].currentBurst;
+            }
+
 
             coreStart.release();
             currentposition++;
