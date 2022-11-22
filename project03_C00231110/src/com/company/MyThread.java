@@ -7,7 +7,7 @@ public class MyThread extends Thread{
     //Begin code changes by Ethan Forster
     public int id;
     public int maxBurst;
-    private int currentBurst;
+    public int currentBurst;
     public int allottedBurst;
     private Semaphore[] taskStart;
     private Semaphore[] taskEnd;

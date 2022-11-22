@@ -36,8 +36,12 @@ public class CPU extends Thread {
 
             // update assigned Task’s allotted burst
             taskID = dispatcher.currentposition;
-            readyQueue[taskID].allottedBurst = dispatcher.allottedBurst;
-            burstGoal -= dispatcher.allottedBurst;
+            if (readyQueue[taskID].currentBurst >= dispatcher.allottedBurst) {
+                readyQueue[taskID].allottedBurst = dispatcher.allottedBurst;
+            } else {
+                readyQueue[taskID].allottedBurst = readyQueue[taskID].currentBurst;
+            }
+            burstGoal -= readyQueue[taskID].allottedBurst;
 
             taskStart[taskID].release();
 
