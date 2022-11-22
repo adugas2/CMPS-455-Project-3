@@ -20,8 +20,20 @@ public class DispatcherThread extends Thread {
         this.burstGoal = burstGoal;
     }
 
+    public DispatcherThread(Semaphore dispatcherStart, Semaphore coreStart, MyThread[] readyQueue, int burstGoal) {
+        this.dispatcherStart = dispatcherStart;
+        this.coreStart = coreStart;
+        this.readyQueue = readyQueue;
+        this.burstGoal = burstGoal;
+    }
+
     @Override
     public void run() {
+        RR();
+        FCFS();
+    }
+    //End code changes by Ethan Forster
+    public void RR() {
         System.out.println("Dispatcher    | Using CPU");
         System.out.println("Dispatcher    | Running RR algorithm, Time Quantum = " + quantum);
         System.out.println();
@@ -51,5 +63,30 @@ public class DispatcherThread extends Thread {
             }
         }
     }
-    //End code changes by Ethan Forster
+
+    public void FCFS() {
+        System.out.println("Dispatcher    | Using CPU");
+        System.out.println("Dispatcher    | Running FCFS Algorithm");
+        System.out.println();
+        while(burstGoal > 0) {
+            try {
+                dispatcherStart.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // select task from ready queue
+            // assign Task and allotted burst to Core
+            System.out.println("Dispatcher    | Running process " + currentposition);
+            allottedBurst = burstGoal;
+            burstGoal-= readyQueue[currentposition].currentBurst;
+
+            coreStart.release();
+            currentposition++;
+            if (currentposition > readyQueue.length -1){
+                currentposition = 0;
+            }
+        }
+
+    }
 }
