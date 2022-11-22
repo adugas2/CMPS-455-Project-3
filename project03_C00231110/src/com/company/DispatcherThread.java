@@ -42,6 +42,10 @@ public class DispatcherThread extends Thread {
                 FCFS();
                 break;
             }
+            case (3):{
+                NPSJF();
+                break;
+            }
         }
     }
 
@@ -91,7 +95,7 @@ public class DispatcherThread extends Thread {
             // select task from ready queue
             // assign Task and allotted burst to Core
             System.out.println("Dispatcher    | Running process " + currentposition);
-            allottedBurst = burstGoal;
+            allottedBurst = readyQueue[currentposition].currentBurst;
             burstGoal-= readyQueue[currentposition].currentBurst;
 
             coreStart.release();
@@ -114,20 +118,19 @@ public class DispatcherThread extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-        // select task from ready queue
-        // assign Task and allotted burst to Core
-        System.out.println("Dispatcher    | Running process " + currentposition);
-        currentposition = 0;
-        for(int i = 1; i < readyQueue.length; i++){
-            if (readyQueue[i].currentBurst < readyQueue[currentposition].currentBurst && readyQueue[i].currentBurst > 0)
-                currentposition = i;
-        }
 
-        coreStart.release();
-        currentposition++;
-        if (currentposition > readyQueue.length -1){
+            // select task from ready queue
+            // assign Task and allotted burst to Core
             currentposition = 0;
+            for (int i = 1; i < readyQueue.length; i++) {
+                if (readyQueue[i].currentBurst < readyQueue[currentposition].currentBurst && readyQueue[i].currentBurst > 0)
+                    currentposition = i;
+            }
+            System.out.println("Dispatcher    | Running process " + currentposition);
+            allottedBurst = readyQueue[currentposition].currentBurst;
+            burstGoal-= readyQueue[currentposition].currentBurst;
+
+            coreStart.release();
         }
     }
     //End code changes by Austin Dugas

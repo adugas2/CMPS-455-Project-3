@@ -182,7 +182,7 @@ public class Main {
                     RR(quantum);
                     break;
                 case 3:
-                    //NSJF();
+                    NPSJF();
                     break;
                 case 4:
                     //PSJF();
@@ -234,6 +234,7 @@ public class Main {
             taskThread.start();
         }
         dispatcher.start();
+        
     }
     // End code changes by Austin Dugas
 
@@ -322,6 +323,8 @@ public class Main {
             taskThread.start();
         }
         dispatcher.start();
+
+
         //End code changes by brian Hodge
     }
 }
