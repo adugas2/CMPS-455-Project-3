@@ -118,18 +118,10 @@ public class DispatcherThread extends Thread {
         // select task from ready queue
         // assign Task and allotted burst to Core
         System.out.println("Dispatcher    | Running process " + currentposition);
-        allottedBurst = burstGoal;
-        burstGoal -= readyQueue[currentposition].currentBurst;
-        nextBurst -= readyQueue[currentposition + 1].currentBurst;
-        for (int i = 0; i < readyQueue.length; i++) {
-            if (burstGoal < nextBurst) {
-                burstGoal = nextBurst;
-                burstGoal -= readyQueue[currentposition].currentBurst;
-                nextBurst -= readyQueue[currentposition + 1].currentBurst;
-            } else {
-                burstGoal -= readyQueue[currentposition].currentBurst;
-                nextBurst -= readyQueue[currentposition + 1].currentBurst;
-            }
+        currentposition = 0;
+        for(int i = 1; i < readyQueue.length; i++){
+            if (readyQueue[i].currentBurst < readyQueue[currentposition].currentBurst && readyQueue[i].currentBurst > 0)
+                currentposition = i;
         }
 
         coreStart.release();
